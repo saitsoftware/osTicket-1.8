@@ -17,3 +17,7 @@ stage
 # Ignore mPDF temp files
 include/mpdf/ttfontdata
 include/mpdf/tmp
+
+# IDE config
+.idea
+atlassian-ide-plugin.xml
