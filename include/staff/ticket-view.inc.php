@@ -479,7 +479,7 @@ $tcount+= $ticket->getNumNotes();
 		
 		<!-- Strobe Technologies Ltd  | 22/10/2014 | START - Add Time Tab to menu -->
 		<?php if ($cfg->isTicketTime()) { ?>
-			<li><a id="time_tab" href="#time"><?php echo __('Add Time to Ticket'); ?></a></li>
+			<li><a id="time_tab" href="#time"><?php echo __('Agregar Tiempo Invertido'); ?></a></li>
 		<?php } ?>
 		<!-- Strobe Technologies Ltd  | 22/10/2014 | END - Add Time Tab to menu -->
     </ul>
@@ -658,21 +658,21 @@ print $response_form->getField('attachments')->render();
 			if($ticket->isOpen()) { ?>
             <tr>
                 <td width="120">
-                    <label><strong>Time Spent:</strong></label>
+                    <label><strong>Tiempo Invertido:</strong></label>
                 </td>
                 <td>
-                    <label for="current_time_spent"><strong>Current Time Spent:</strong></label>
+                    <label for="current_time_spent"><strong>Tiempo Invertido Actual:</strong></label>
                     <?php echo $ticket->getTimeSpent().' ('.$ticket->getRealTimeSpent().')<br />';
                     // show the current time spent (if any) ?>
-                    <label for="time_spent"><strong>Time Spent:</strong></label>
+                    <label for="time_spent"><strong>Tiempo Invertido:</strong></label>
                     <input type="text" name="time_spent" size="5"
                     value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
-                    (0.75 = 45 minutes)
+                    ( 0.085 =  5 minutos, 0.25 = 15 minutos, 0.5 = 30 minutos ,0.75 = 45 minutos)
                 </td>
             </tr>
             <tr>
 				<td>
-                    <label for="time_type"><strong>Time Type:</strong></label>
+                    <label for="time_type"><strong>Tipo de Tiempo:</strong></label>
                 </td>
                 <td>
                     <select id="time_type" name="time_type">
@@ -775,21 +775,21 @@ print $note_form->getField('attachments')->render();
 			if($ticket->isOpen()) { ?>
             <tr>
                 <td width="120">
-                    <label><strong>Time Spent:</strong></label>
+                    <label><strong>Tiempo Invertido:</strong></label>
                 </td>
                 <td>
-                    <label for="current_time_spent"><strong>Current Time Spent:</strong></label>
+                    <label for="current_time_spent"><strong>Tiempo Invertido Actual:</strong></label>
                     <?php echo $ticket->getTimeSpent().' ('.$ticket->getRealTimeSpent().')<br />';
                     // show the current time spent (if any) ?>
-                    <label for="time_spent"><strong>Time Spent:</strong></label>
+                    <label for="time_spent"><strong>Tiempo Invertido:</strong></label>
                     <input type="text" name="time_spent" size="5"
                     value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
-                    (0.75 = 45 minutes)
+                    ( 0.085 =  5 minutos, 0.25 = 15 minutos, 0.5 = 30 minutos ,0.75 = 45 minutos)
                 </td>
             </tr>
             <tr>
 				<td>
-                    <label for="time_type"><strong>Time Type:</strong></label>
+                    <label for="time_type"><strong>Tipo de Tiempo:</strong></label>
                 </td>
                 <td>
                     <select id="time_type" name="time_type">
@@ -977,23 +977,23 @@ print $note_form->getField('attachments')->render();
         <input type="hidden" name="ticket_id" value="<?php echo $ticket->getId(); ?>">
         <input type="hidden" name="a" value="time">
         <table width="100%" border="0" cellspacing="0" cellpadding="3">
-			<p  style="padding-left:100px;">Add Required time to ticket.</p>
+			<p  style="padding-left:100px;">Agregar Tiempo Invertido a Ticket.</p>
 			<p>&nbsp;</p>
 			<table>
 				<tr>
-					<td width="200px"><label for="current_time_spent"><strong>Current Time Spent:</strong></label></td>
+					<td width="200px"><label for="current_time_spent"><strong>Tiempo Invertido Actual:</strong></label></td>
 					<td><?php echo $ticket->getTimeSpent().' ('.$ticket->getRealTimeSpent().')';
 							// show the current time spent (if any) ?></td>
 				</tr>
 				<tr>
 					<td width="200px"><label for="time_spent"><strong>Time Spent:</strong></label></td>
 					<td><input type="text" name="time_spent" size="5" value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
-						(0.75 = 45 minutes)
+						( 0.085 =  5 minutos, 0.25 = 15 minutos, 0.5 = 30 minutos ,0.75 = 45 minutos)
 						<span class="error"><?php echo $errors['time_spent']; ?></span></td>
 				</tr>
 			</table>
 			<p  style="padding-left:165px;">
-				<input class="btn_sm" type="submit" value="<?php echo __('Add Time'); ?>">
+				<input class="btn_sm" type="submit" value="<?php echo __('Agregar Tiempo'); ?>">
 				<input class="btn_sm" type="reset" value="<?php echo __('Reset');?>">
 			</p>
 		</table>
