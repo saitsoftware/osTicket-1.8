@@ -16,7 +16,7 @@
 require('staff.inc.php');
 $nav->setTabActive('dashboard');
 $ost->addExtraHeader('<meta name="tip-namespace" content="dashboard.dashboard" />',
-    "$('#content').data('tipNamespace', 'dashboard.dashboard');");
+    "$('#dashboard-content').data('tipNamespace', 'dashboard.dashboard');");
 require(STAFFINC_DIR.'header.inc.php');
 ?>
 

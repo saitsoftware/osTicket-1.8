@@ -87,7 +87,7 @@ div#header a {
 
 
 #container {
-    width:960px;
+    width:1152px; /* 960px SAIT SOFTWARE */
     margin:0 auto 20px auto;
 }
 
@@ -105,7 +105,8 @@ div#header a {
     text-decoration:none;
     outline:none;
     text-indent:-9999px;
-    background:url(../images/Logo-Sait-300x203.png) top left no-repeat; /*SAIT SOFTWARE ost-logo.png */
+    background:url(../images/Logo-Sait.png) top left no-repeat; /*SAIT SOFTWARE ost-logo.png */
+    background-size: 130px 76px; /*SAIT SOFTWARE */
 }
 
 #header p {
@@ -416,7 +417,7 @@ a.Icon:hover {
     border:1px solid #aaa;
     border-top:none;
     border-bottom:3px solid #bbb;
-    padding:10px 10px 20px 10px;
+    padding:10px 10px 20px 110px; /* 10px SAIT SOFTAWARE*/
     background:#fff;
 }
 

@@ -331,7 +331,7 @@ if($ticket->isOverdue())
 				<?php
 				if ($cfg->isTicketTime() || $cfg->isThreadTime()) { ?>
 				<tr>
-                    <th nowrap>Time Spent:</th>
+                    <th nowrap>Tiempo Invertido:</th>
                     <td><?php echo $ticket->getTimeSpent(); // Strobe Technologies Ltd | 20/10/2014 | Show Total Time Spent in Ticket information. ?></td>
                 </tr>
 				<?php } ?>
@@ -986,7 +986,7 @@ print $note_form->getField('attachments')->render();
 							// show the current time spent (if any) ?></td>
 				</tr>
 				<tr>
-					<td width="200px"><label for="time_spent"><strong>Time Spent:</strong></label></td>
+					<td width="200px"><label for="time_spent"><strong>Tiempo Invertido:</strong></label></td>
 					<td><input type="text" name="time_spent" size="5" value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
 						( 0.085 =  5 minutos, 0.25 = 15 minutos, 0.5 = 30 minutos ,0.75 = 45 minutos)
 						<span class="error"><?php echo $errors['time_spent']; ?></span></td>
