@@ -105,7 +105,7 @@ div#header a {
     text-decoration:none;
     outline:none;
     text-indent:-9999px;
-    background:url(../images/ost-logo.png) top left no-repeat;
+    background:url(../images/Logo-Sait-300x203.png) top left no-repeat; /*SAIT SOFTWARE ost-logo.png */
 }
 
 #header p {
@@ -900,7 +900,7 @@ ul.tabs {
 }
 
 #response_options ul.tabs {
-    padding-left:190px;
+    padding-left:60px; /* 190px prev, edited by SAIT Software*/
 }
 
 
