@@ -579,7 +579,7 @@ Class ThreadEntry {
             return $this->attachments;
 
         //XXX: inner join the file table instead?
-        $sql='SELECT a.attach_id, f.id as file_id, f.size, lower(f.`key`) as file_hash, f.name, a.inline '
+        $sql='SELECT a.attach_id, f.id as file_id, f.size, lower(f.`key`) as file_hash, f.`signature` as file_sig, f.name, a.inline '
             .' FROM '.FILE_TABLE.' f '
             .' INNER JOIN '.TICKET_ATTACHMENT_TABLE.' a ON(f.id=a.file_id) '
             .' WHERE a.ticket_id='.db_input($this->getTicketId())
@@ -587,19 +587,21 @@ Class ThreadEntry {
 
         $this->attachments = array();
         if(($res=db_query($sql)) && db_num_rows($res)) {
-            while($rec=db_fetch_array($res))
+            while($rec=db_fetch_array($res)) {
+                $rec['download_url'] = AttachmentFile::generateDownloadUrl(
+                    $rec['file_id'], $rec['file_hash'], $rec['file_sig']);
                 $this->attachments[] = $rec;
+            }
         }
 
         return $this->attachments;
     }
 
-    function getAttachmentUrls($script='image.php') {
+    function getAttachmentUrls() {
         $json = array();
         foreach ($this->getAttachments() as $att) {
             $json[$att['file_hash']] = array(
-                'download_url' => sprintf('attachment.php?id=%d&h=%s', $att['attach_id'],
-                    strtolower(md5($att['file_id'].session_id().$att['file_hash']))),
+                'download_url' => $att['download_url'],
                 'filename' => $att['name'],
             );
         }
@@ -612,14 +614,12 @@ Class ThreadEntry {
         foreach($this->getAttachments() as $attachment ) {
             if ($attachment['inline'])
                 continue;
-            /* The hash can be changed  but must match validation in @file */
-            $hash=md5($attachment['file_id'].session_id().$attachment['file_hash']);
             $size = '';
             if($attachment['size'])
                 $size=sprintf('<em>(%s)</em>', Format::file_size($attachment['size']));
 
-            $str.=sprintf('<a class="Icon file no-pjax" href="%s?id=%d&h=%s" target="%s">%s</a>%s&nbsp;%s',
-                    $file, $attachment['attach_id'], $hash, $target, Format::htmlchars($attachment['name']), $size, $separator);
+            $str.=sprintf('<a class="Icon file no-pjax" href="%s" target="%s">%s</a>%s&nbsp;%s',
+                    $attachment['download_url'], $target, Format::htmlchars($attachment['name']), $size, $separator);
         }
 
         return $str;
@@ -910,7 +910,10 @@ Class ThreadEntry {
         $match = array();
         if ($subject
                 && $mailinfo['email']
-                && preg_match("/\b#(\S+)/u", $subject, $match)
+                // Required `#` followed by one or more of
+                //      punctuation (-) then letters, numbers, and symbols
+                // (Try not to match closing punctuation (`]`) in [#12345])
+                && preg_match("/#((\p{P}*[^\p{C}\p{Z}\p{P}]+)+)/u", $subject, $match)
                 //Lookup by ticket number
                 && ($ticket = Ticket::lookupByNumber($match[1]))
                 //Lookup the user using the email address
@@ -1386,6 +1389,11 @@ class ThreadBody /* extends SplString */ {
         return $this->display('html');
     }
 
+    function asVar() {
+        // Email template, assume HTML
+        return $this->display('email');
+    }
+
     function display($format=false) {
         throw new Exception('display: Abstract display() method not implemented');
     }
@@ -1419,27 +1427,24 @@ class TextThreadBody extends ThreadBody {
         if ($this->isEmpty())
             return '(empty)';
 
+        $escaped = Format::htmlchars($this->body);
         switch ($output) {
         case 'html':
             return '<div style="white-space:pre-wrap">'
-                .Format::clickableurls(Format::htmlchars($this->body)).'</div>';
+                .Format::clickableurls($escaped).'</div>';
         case 'email':
-            return '<div style="white-space:pre-wrap">'.$this->body.'</div>';
+            return '<div style="white-space:pre-wrap">'
+                .$escaped.'</div>';
         case 'pdf':
-            return nl2br($this->body);
+            return nl2br($escaped);
         default:
-            return '<pre>'.$this->body.'</pre>';
+            return '<pre>'.$escaped.'</pre>';
         }
-    }
-
-    function asVar() {
-        // Email template, assume HTML
-        return $this->display('email');
     }
 }
 class HtmlThreadBody extends ThreadBody {
     function __construct($body, $options=array()) {
-        if ($options['strip-embedded'])
+        if (!isset($options['strip-embedded']) || $options['strip-embedded'])
             $body = $this->extractEmbeddedHtmlImages($body);
         parent::__construct($body, 'html', $options);
     }
@@ -1476,7 +1481,7 @@ class HtmlThreadBody extends ThreadBody {
         case 'email':
             return $this->body;
         case 'pdf':
-            return Format::clickableurls($this->body, false);
+            return Format::clickableurls($this->body);
         default:
             return Format::display($this->body);
         }

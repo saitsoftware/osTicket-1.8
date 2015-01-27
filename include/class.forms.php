@@ -676,7 +676,7 @@ class TextboxField extends FormField {
                     $wrapped = "/".$value."/iu";
                     if (false === @preg_match($value, ' ')
                             && false !== @preg_match($wrapped, ' ')) {
-                        return $wrapped;
+                        $value = $wrapped;
                     }
                     if ($value == '//iu')
                         return '';
@@ -946,21 +946,33 @@ class ChoiceField extends FormField {
 
     function to_php($value) {
         if (is_string($value))
-            $array = JsonDataParser::parse($value) ?: $value;
-        else
-            $array = $value;
-        $config = $this->getConfiguration();
-        if (is_array($array) && !$config['multiselect'] && count($array) < 2) {
-            reset($array);
-            return key($array);
+            $value = JsonDataParser::parse($value) ?: $value;
+
+        // CDATA table may be built with comma-separated key,value,key,value
+        if (is_string($value)) {
+            $values = array();
+            $choices = $this->getChoices();
+            foreach (explode(',', $value) as $V) {
+                if (isset($choices[$V]))
+                    $values[$V] = $choices[$V];
+            }
+            if (array_filter($values))
+                $value = $values;
         }
-        return $array;
+        $config = $this->getConfiguration();
+        if (!$config['multiselect'] && is_array($value) && count($value) < 2) {
+            reset($value);
+            return key($value);
+        }
+        return $value;
     }
 
     function toString($value) {
-        $selection = $this->getChoice($value);
-        return is_array($selection) ? implode(', ', array_filter($selection))
-            : (string) $selection;
+        if (!is_array($value))
+            $value = $this->getChoice($value);
+        if (is_array($value))
+            return implode(', ', $value);
+        return (string) $value;
     }
 
     function getChoice($value) {
@@ -1128,7 +1140,9 @@ class ThreadEntryField extends FormField {
 
         $attachments = new FileUploadField();
         $fileupload_config = $attachments->getConfigurationOptions();
-        $fileupload_config['extensions']->set('default', $cfg->getAllowedFileTypes());
+        if ($cfg->getAllowedFileTypes())
+            $fileupload_config['extensions']->set('default', $cfg->getAllowedFileTypes());
+
         return array(
             'attachments' => new BooleanField(array(
                 'label'=>__('Enable Attachments'),
@@ -1573,6 +1587,10 @@ class FileUploadField extends FormField {
                 else {
                     if ($ext[0] != '.')
                         $ext = '.' . $ext;
+
+                    // Ensure that the extension is lower-cased for comparison latr
+                    $ext = strtolower($ext);
+
                     // Add this to the MIME types list so it can be exported to
                     // the @accept attribute
                     if (!isset($extensions[$ext]))
@@ -1629,10 +1647,8 @@ class FileUploadField extends FormField {
     function display($value) {
         $links = array();
         foreach ($this->getFiles() as $f) {
-            $hash = strtolower($f['key']
-                . md5($f['id'].session_id().strtolower($f['key'])));
-            $links[] = sprintf('<a class="no-pjax" href="file.php?h=%s">%s</a>',
-                $hash, Format::htmlchars($f['name']));
+            $links[] = sprintf('<a class="no-pjax" href="%s">%s</a>',
+                Format::htmlchars($f['download_url']), Format::htmlchars($f['name']));
         }
         return implode('<br/>', $links);
     }
@@ -1827,11 +1843,11 @@ class ChoicesWidget extends Widget {
         }
 
         $values = $this->value;
-        if (!is_array($values) && $values) {
+        if (!is_array($values) && isset($values)) {
             $values = array($values => $this->field->getChoice($values));
         }
 
-        if ($values === null)
+        if (!is_array($values))
             $values = $have_def ? array($def_key => $choices[$def_key]) : array();
 
         ?>
@@ -2078,6 +2094,7 @@ class FileUploadWidget extends Widget {
                     'name' => $file->getName(),
                     'type' => $file->getType(),
                     'size' => $file->getSize(),
+                    'download_url' => $file->getDownloadUrl(),
                 );
             }
         }

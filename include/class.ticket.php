@@ -54,6 +54,7 @@ class Ticket {
 
     var $thread; //Thread obj.
 
+
     // Status -- listed here until we have a formal status class
     static $STATUSES = array(
         /* @trans */ 'open',
@@ -111,6 +112,7 @@ class Ticket {
         return (db_query($sql) && db_affected_rows())?true:false;
     } 
 	// Strobe Technologies Ltd | 20/10/2014 | END - Variables and functions for recording and retrieving time spent
+
 
     function Ticket($id) {
         $this->id = 0;
@@ -883,7 +885,7 @@ class Ticket {
     }
 
     //Status helper.
-    function setStatus($status, $comments='') {
+    function setStatus($status, $comments='', $set_closing_agent=true) {
         global $thisstaff;
 
         if ($status && is_numeric($status))
@@ -906,7 +908,7 @@ class Ticket {
         switch($status->getState()) {
             case 'closed':
                 $sql.=', closed=NOW(), duedate=NULL ';
-                if ($thisstaff)
+                if ($thisstaff && $set_closing_agent)
                     $sql.=', staff_id='.db_input($thisstaff->getId());
 
                 $ecb = function($t) {
@@ -938,21 +940,24 @@ class Ticket {
         if (!db_query($sql) || !db_affected_rows())
             return false;
 
-        // Log status change b4 reload
-        $note = sprintf(__('Status changed from %s to %s by %s'),
-                $this->getStatus(),
-                $status,
-                $thisstaff ?: 'SYSTEM');
+        // Log status change b4 reload — if currently has a status. (On new
+        // ticket, the ticket is opened and thereafter the status is set to
+        // the requested status).
+        if ($current_status = $this->getStatus()) {
+            $note = sprintf(__('Status changed from %s to %s by %s'),
+                    $this->getStatus(),
+                    $status,
+                    $thisstaff ?: 'SYSTEM');
 
-        $alert = false;
-        if ($comments) {
-            $note .= sprintf('<hr>%s', $comments);
-            // Send out alerts if comments are included
-            $alert = true;
+            $alert = false;
+            if ($comments) {
+                $note .= sprintf('<hr>%s', $comments);
+                // Send out alerts if comments are included
+                $alert = true;
+            }
+
+            $this->logNote(__('Status Changed'), $note, $thisstaff, $alert);
         }
-
-        $this->logNote(__('Status Changed'), $note, $thisstaff, $alert);
-
         // Log events via callback
         if ($ecb) $ecb($this);
 
@@ -1054,7 +1059,7 @@ class Ticket {
         //Send alert to out sleepy & idle staff.
         if ($alertstaff
                 && $cfg->alertONNewTicket()
-                && ($email=$cfg->getAlertEmail())
+                && ($email=$dept->getAlertEmail())
                 && ($msg=$tpl->getNewTicketAlertMsgTemplate())) {
 
             $msg = $this->replaceVars($msg->asArray(), array('message' => $message));
@@ -1217,7 +1222,10 @@ class Ticket {
         }
 
         // Reopen if closed AND reopenable
-        if ($this->isClosed() && $this->isReopenable())
+        // We're also checking autorespond flag because we don't want to
+        // reopen closed tickets on auto-reply from end user. This is not to
+        // confused with autorespond on new message setting
+        if ($autorespond && $this->isClosed() && $this->isReopenable())
             $this->reopen();
 
        /**********   double check auto-response  ************/
@@ -1280,7 +1288,7 @@ class Ticket {
         $dept = $this->getDept();
         if(!$dept
                 || !($tpl = $dept->getTemplate())
-                || !($email = $cfg->getAlertEmail()))
+                || !($email = $dept->getAlertEmail()))
             return true;
 
         //recipients
@@ -1337,7 +1345,7 @@ class Ticket {
         //Get the message template
         if(($tpl = $dept->getTemplate())
                 && ($msg=$tpl->getOverdueAlertMsgTemplate())
-                && ($email=$cfg->getAlertEmail())) {
+                && ($email = $dept->getAlertEmail())) {
 
             $msg = $this->replaceVars($msg->asArray(),
                 array('comments' => $comments));
@@ -1534,7 +1542,7 @@ class Ticket {
         if(!$alert || !$cfg->alertONTransfer() || !($dept=$this->getDept()))
             return true; //no alerts!!
 
-         if(($email=$cfg->getAlertEmail())
+         if (($email = $dept->getAlertEmail())
                      && ($tpl = $dept->getTemplate())
                      && ($msg=$tpl->getTransferAlertMsgTemplate())) {
 
@@ -1762,7 +1770,7 @@ class Ticket {
                 'thread'=>$message);
         //If enabled...send alert to staff (New Message Alert)
         if($cfg->alertONNewMessage()
-                && ($email = $cfg->getAlertEmail())
+                && ($email = $dept->getAlertEmail())
                 && ($tpl = $dept->getTemplate())
                 && ($msg = $tpl->getNewMessageAlertMsgTemplate())) {
 
@@ -1776,8 +1784,12 @@ class Ticket {
 
             //Assigned staff if any...could be the last respondent
 
-            if($this->isAssigned() && ($staff=$this->getStaff()))
-                $recipients[]=$staff;
+            if ($this->isAssigned()) {
+                if ($staff = $this->getStaff())
+                    $recipients[] = $staff;
+                elseif ($team = $this->getTeam())
+                    $recipients = array_merge($recipients, $team->getMembers());
+            }
 
             //Dept manager
             if($cfg->alertDeptManagerONNewMessage() && $dept && ($manager=$dept->getManager()))
@@ -2019,7 +2031,7 @@ class Ticket {
         if(!$alert || !$cfg->alertONNewNote() || !($dept=$this->getDept()))
             return $note;
 
-        if(($email=$cfg->getAlertEmail())
+        if (($email = $dept->getAlertEmail())
                 && ($tpl = $dept->getTemplate())
                 && ($msg=$tpl->getNoteAlertMsgTemplate())) {
 
@@ -2378,12 +2390,70 @@ class Ticket {
         return db_fetch_array(db_query($sql));
     }
 
+    protected function filterTicketData($origin, $vars, $forms, $user=false) {
+        global $cfg;
+
+        // Unset all the filter data field data in case things change
+        // during recursive calls
+        foreach ($vars as $k=>$v)
+            if (strpos($k, 'field.') === 0)
+                unset($vars[$k]);
+
+        foreach ($forms as $F) {
+            if ($F) {
+                $vars += $F->getFilterData();
+            }
+        }
+
+        // Add in user and organization data for filtering
+        if ($user) {
+            $vars += $user->getFilterData();
+            $vars['email'] = $user->getEmail();
+            $vars['name'] = $user->getName();
+            if ($org = $user->getOrganization()) {
+                $vars += $org->getFilterData();
+            }
+        }
+        // Unpack the basic user information
+        else {
+            $interesting = array('name', 'email');
+            $user_form = UserForm::getUserForm()->getForm($vars);
+            // Add all the user-entered info for filtering
+            foreach ($user_form->getFields() as $f) {
+                $vars['field.'.$f->get('id')] = $f->toString($f->getClean());
+                if (in_array($f->get('name'), $interesting))
+                    $vars[$f->get('name')] = $vars['field.'.$f->get('id')];
+            }
+            // Add in organization data if one exists for this email domain
+            list($mailbox, $domain) = explode('@', $vars['email'], 2);
+            if ($org = Organization::forDomain($domain)) {
+                $vars += $org->getFilterData();
+            }
+        }
+
+        try {
+            // Make sure the email address is not banned
+            if (TicketFilter::isBanned($vars['email'])) {
+                throw new RejectedException(Banlist::getFilter(), $vars);
+            }
+
+            // Init ticket filters...
+            $ticket_filter = new TicketFilter($origin, $vars);
+            $ticket_filter->apply($vars);
+        }
+        catch (FilterDataChanged $ex) {
+            // Don't pass user recursively, assume the user has changed
+            return self::filterTicketData($origin, $vars, $forms);
+        }
+        return $vars;
+    }
+
     /*
      * The mother of all functions...You break it you fix it!
      *
      *  $autorespond and $alertstaff overrides config settings...
      */
-    static function create($vars, &$errors, $origin, $autorespond=true,
+    static function create(&$vars, &$errors, $origin, $autorespond=true,
             $alertstaff=true) {
         global $ost, $cfg, $thisclient, $_FILES;
 
@@ -2423,91 +2493,21 @@ class Ticket {
         // Create and verify the dynamic form entry for the new ticket
         $form = TicketForm::getNewInstance();
         $form->setSource($vars);
-        // If submitting via email, ensure we have a subject and such
-        foreach ($form->getFields() as $field) {
-            $fname = $field->get('name');
-            if ($fname && isset($vars[$fname]) && !$field->value)
-                $field->value = $field->parse($vars[$fname]);
+
+        // If submitting via email or api, ensure we have a subject and such
+        if (!in_array(strtolower($origin), array('web', 'staff'))) {
+            foreach ($form->getFields() as $field) {
+                $fname = $field->get('name');
+                if ($fname && isset($vars[$fname]) && !$field->value)
+                    $field->value = $field->parse($vars[$fname]);
+            }
         }
 
         if (!$form->isValid($field_filter('ticket')))
             $errors += $form->errors();
 
-        // Unpack dynamic variables into $vars for filter application
-        $vars += $form->getFilterData();
-
-        // Unpack the basic user information
-        if ($vars['uid'] && ($user = User::lookup($vars['uid']))) {
-            $vars['email'] = $user->getEmail();
-            $vars['name'] = $user->getName();
-            // Add in user and organization data for filtering
-            $vars += $user->getFilterData();
-            if ($org = $user->getOrganization()) {
-                $vars += $org->getFilterData();
-            }
-        }
-        else {
-            $interesting = array('name', 'email');
-            $user_form = UserForm::getUserForm()->getForm($vars);
-            // Add all the user-entered info for filtering
-            foreach ($user_form->getFields() as $f) {
-                $vars['field.'.$f->get('id')] = $f->toString($f->getClean());
-                if (in_array($f->get('name'), $interesting))
-                    $vars[$f->get('name')] = $vars['field.'.$f->get('id')];
-            }
-            // Add in organization data if one exists for this email domain
-            list($mailbox, $domain) = explode('@', $vars['email'], 2);
-            if ($org = Organization::forDomain($domain)) {
-                $vars += $org->getFilterData();
-            }
-        }
-
-
-        //Check for 403
-        if ($vars['email']
-                && Validator::is_email($vars['email'])) {
-
-            //Make sure the email address is not banned
-            if (TicketFilter::isBanned($vars['email'])) {
-                return $reject_ticket(sprintf(_S('Banned email - %s'), $vars['email']));
-            }
-
-            //Make sure the open ticket limit hasn't been reached. (LOOP CONTROL)
-            if ($cfg->getMaxOpenTickets() > 0
-                    && strcasecmp($origin, 'staff')
-                    && ($_user=TicketUser::lookupByEmail($vars['email']))
-                    && ($openTickets=$_user->getNumOpenTickets())
-                    && ($openTickets>=$cfg->getMaxOpenTickets()) ) {
-
-                $errors = array('err' => __("You've reached the maximum open tickets allowed."));
-                $ost->logWarning(sprintf(_S('Ticket denied - %s'), $vars['email']),
-                        sprintf(_S('Max open tickets (%1$d) reached for %2$s'),
-                            $cfg->getMaxOpenTickets(), $vars['email']),
-                        false);
-
-                return 0;
-            }
-        }
-
-        if ($vars['topicId']) {
-            if (($__topic=Topic::lookup($vars['topicId']))
-                && $__form = $__topic->getForm()
-            ) {
-                $__form = $__form->instanciate();
-                $__form->setSource($vars);
-                $vars += $__form->getFilterData();
-            }
-        }
-
-        //Init ticket filters...
-        $ticket_filter = new TicketFilter($origin, $vars);
-        // Make sure email contents should not be rejected
-        if ($ticket_filter
-                && ($filter=$ticket_filter->shouldReject())) {
-            return $reject_ticket(
-                sprintf(_S('Ticket rejected (%s) by filter "%s"'),
-                    $vars['email'], $filter->getName()));
-        }
+        if ($vars['uid'])
+            $user = User::lookup($vars['uid']);
 
         $id=0;
         $fields=array();
@@ -2547,7 +2547,42 @@ class Ticket {
         if (!$errors) {
 
             # Perform ticket filter actions on the new ticket arguments
-            if ($ticket_filter) $ticket_filter->apply($vars);
+            $__form = null;
+            if ($vars['topicId']) {
+                if (($__topic=Topic::lookup($vars['topicId']))
+                    && ($__form = $__topic->getForm())
+                ) {
+                    $__form = $__form->instanciate();
+                    $__form->setSource($vars);
+                }
+            }
+
+            try {
+                $vars = self::filterTicketData($origin, $vars,
+                    array($form, $__form), $user);
+            }
+            catch (RejectedException $ex) {
+                return $reject_ticket(
+                    sprintf(_S('Ticket rejected (%s) by filter "%s"'),
+                    $ex->vars['email'], $ex->getRejectingFilter()->getName())
+                );
+            }
+
+            //Make sure the open ticket limit hasn't been reached. (LOOP CONTROL)
+            if ($cfg->getMaxOpenTickets() > 0
+                    && strcasecmp($origin, 'staff')
+                    && ($_user=TicketUser::lookupByEmail($vars['email']))
+                    && ($openTickets=$_user->getNumOpenTickets())
+                    && ($openTickets>=$cfg->getMaxOpenTickets()) ) {
+
+                $errors = array('err' => __("You've reached the maximum open tickets allowed."));
+                $ost->logWarning(sprintf(_S('Ticket denied - %s'), $vars['email']),
+                        sprintf(_S('Max open tickets (%1$d) reached for %2$s'),
+                            $cfg->getMaxOpenTickets(), $vars['email']),
+                        false);
+
+                return 0;
+            }
 
             // Allow vars to be changed in ticket filter and applied to the user
             // account created or detected
@@ -2693,7 +2728,6 @@ class Ticket {
             .' ,`number`='.db_input($number)
             .' ,dept_id='.db_input($deptId)
             .' ,topic_id='.db_input($topicId)
-            .' ,status_id='.db_input($statusId)
             .' ,ip_address='.db_input($ipaddress)
             .' ,source='.db_input($source);
 
@@ -2764,8 +2798,16 @@ class Ticket {
             if ($vars['staffId'])
                  $ticket->assignToStaff($vars['staffId'], _S('Auto Assignment'));
             if ($vars['teamId'])
-                $ticket->assignToTeam($vars['teamId'], _S('Auto Assignment'));
+                // No team alert if also assigned to an individual agent
+                $ticket->assignToTeam($vars['teamId'], _S('Auto Assignment'),
+                    !$vars['staffId']);
         }
+
+        // Apply requested status — this should be done AFTER assignment,
+        // because if it is requested to be closed, it should not cause the
+        // ticket to be reopened for assignment.
+        if ($statusId)
+            $ticket->setStatus($statusId, false, false);
 
         /**********   double check auto-response  ************/
         //Override auto responder if the FROM email is one of the internal emails...loop control.
@@ -2855,11 +2897,7 @@ class Ticket {
             $vars['response'] = $ticket->replaceVars($vars['response']);
             // $vars['cannedatachments'] contains the attachments placed on
             // the response form.
-            if(($response=$ticket->postReply($vars, $errors, false))) {
-                //Only state supported is closed on response
-                if(isset($vars['ticket_state']) && $thisstaff->canCloseTickets())
-                    $ticket->setState($vars['ticket_state']);
-            }
+            $response = $ticket->postReply($vars, $errors, false);
         }
 
         // Not assigned...save optional note if any
@@ -2873,10 +2911,16 @@ class Ticket {
         }
 
         $ticket->reload();
+        $dept = $ticket->getDept();
 
-        if(!$cfg->notifyONNewStaffTicket()
+        // See if we need to skip auto-response.
+        $autorespond = isset($create_vars['autorespond'])
+            ? $create_vars['autorespond'] : true;
+
+        if (!$autorespond
                 || !isset($vars['alertuser'])
-                || !($dept=$ticket->getDept()))
+                || !$dept->autoRespONNewTicket()
+                || !$cfg->notifyONNewStaffTicket())
             return $ticket; //No alerts.
 
         //Send Notice to user --- if requested AND enabled!!

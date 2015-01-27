@@ -429,11 +429,18 @@ class DynamicFormField extends VerySimpleModel {
     }
 
     function getField($cache=true) {
+        global $thisstaff;
+
         if (!$cache)
             return new FormField($this->ht);
 
+        // Finagle the `required` flag for the FormField instance
+        $ht = $this->ht;
+        $ht['required'] = ($thisstaff) ? $this->isRequiredForStaff()
+            : $this->isRequiredForUsers();
+
         if (!isset($this->_field))
-            $this->_field = new FormField($this->ht);
+            $this->_field = new FormField($ht);
         return $this->_field;
     }
 
@@ -690,7 +697,7 @@ class DynamicFormEntry extends VerySimpleModel {
     function getForm() {
         if (!isset($this->_form)) {
             $this->_form = DynamicForm::lookup($this->get('form_id'));
-            if (isset($this->id))
+            if ($this->_form && isset($this->id))
                 $this->_form->data($this);
         }
         return $this->_form;
@@ -1122,12 +1129,22 @@ class SelectionField extends FormField {
     }
 
     function to_php($value, $id=false) {
-        $value = ($value && !is_array($value))
-            ? JsonDataParser::parse($value) : $value;
+        if (is_string($value))
+            $value = JsonDataParser::parse($value) ?: $value;
+
         if (!is_array($value)) {
+            $values = array();
             $choices = $this->getChoices();
-            if (isset($choices[$value]))
-                $value = $choices[$value];
+            foreach (explode(',', $value) as $V) {
+                if (isset($choices[$V]))
+                    $values[$V] = $choices[$V];
+            }
+            if ($id && isset($choices[$id]))
+                $values[$id] = $choices[$id];
+
+            if ($values)
+                return $values;
+            // else return $value unchanged
         }
         // Don't set the ID here as multiselect prevents using exactly one
         // ID value. Instead, stick with the JSON value only.
@@ -1243,13 +1260,6 @@ class SelectionField extends FormField {
             $selection[] = $choices[$this->get('default')];
 
         return $selection;
-    }
-
-    function export($value) {
-        if ($value && is_numeric($value)
-                && ($item = DynamicListItem::lookup($value)))
-            return $item->toString();
-        return $value;
     }
 
     function getFilterData() {

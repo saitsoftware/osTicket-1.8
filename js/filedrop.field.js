@@ -180,11 +180,12 @@
       }
       if (file.id)
         filenode.data('fileId', file.id);
-      if (file.download)
+      if (file.download_url) {
         filenode.find('.filename').prepend(
           $('<a class="no-pjax" target="_blank"></a>').text(file.name)
-            .attr('href', 'file.php?h='+escape(file.download))
+            .attr('href', file.download_url)
         );
+      }
       else
         filenode.find('.filename').prepend($('<span>').text(file.name));
       this.$element.parent().find('.files').append(filenode);
@@ -554,7 +555,7 @@
             if (fileIndex === files_count) {
               return;
             }
-            var reader = new FileReader(),
+            var reader = new window.FileReader(),
                 max_file_size = 1048576 * opts.maxfilesize;
 
             reader.index = fileIndex;
@@ -806,27 +807,5 @@
   };
 
   function empty() {}
-
-  try {
-    if (XMLHttpRequest.prototype.sendAsBinary) {
-        return;
-    }
-    XMLHttpRequest.prototype.sendAsBinary = function(datastr) {
-      function byteValue(x) {
-        return x.charCodeAt(0) & 0xff;
-      }
-      var ords = Array.prototype.map.call(datastr, byteValue);
-      var ui8a = new Uint8Array(ords);
-
-      // Not pretty: Chrome 22 deprecated sending ArrayBuffer, moving instead
-      // to sending ArrayBufferView.  Sadly, no proper way to detect this
-      // functionality has been discovered.  Happily, Chrome 22 also introduced
-      // the base ArrayBufferView class, not present in Chrome 21.
-      if ('ArrayBufferView' in window)
-        this.send(ui8a);
-      else
-        this.send(ui8a.buffer);
-    };
-  } catch (e) {}
 
 })(jQuery);

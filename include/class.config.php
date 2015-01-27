@@ -231,6 +231,10 @@ class OsticketConfig extends Config {
 	}
 	// Strobe Technologies Ltd | 21/10/2014 | END - Checking to see if Time Spent parts are enabled
 
+    function isCannedResponseEnabled() {
+        return $this->get('enable_premade');
+    }
+
     function getVersion() {
         return THIS_VERSION;
     }
@@ -538,15 +542,6 @@ class OsticketConfig extends Config {
 
     function getMaxFileSize() {
         return $this->get('max_file_size');
-    }
-
-    function getStaffMaxFileUploads() {
-        return $this->get('max_staff_file_uploads');
-    }
-
-    function getClientMaxFileUploads() {
-        //TODO: change max_user_file_uploads to max_client_file_uploads
-        return $this->get('max_user_file_uploads');
     }
 
     function getLogLevel() {
@@ -991,7 +986,6 @@ class OsticketConfig extends Config {
             'enable_html_thread'=>isset($vars['enable_html_thread'])?1:0,
             'allow_client_updates'=>isset($vars['allow_client_updates'])?1:0,
             'max_file_size'=>$vars['max_file_size'],
-            'email_attachments'=>isset($vars['email_attachments'])?1:0,
         ));
     }
 
@@ -1025,6 +1019,7 @@ class OsticketConfig extends Config {
             'accept_unregistered_email'=>isset($vars['accept_unregistered_email'])?1:0,
             'add_email_collabs'=>isset($vars['add_email_collabs'])?1:0,
             'reply_separator'=>$vars['reply_separator'],
+            'email_attachments'=>isset($vars['email_attachments'])?1:0,
          ));
     }
 
