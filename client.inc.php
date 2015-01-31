@@ -51,8 +51,9 @@ if (isset($_GET['lang']) && $_GET['lang']) {
     if (Internationalization::getLanguageInfo($_GET['lang']))
         $_SESSION['client:lang'] = $_GET['lang'];
 }else {
-   if (Internationalization::getLanguageInfo('es_mx'))
-       $_SESSION['client:lang'] = 'es_mx';  
+   if (!$_SESSION['client:lang'])
+        if (Internationalization::getLanguageInfo('es_mx'))
+            $_SESSION['client:lang'] = 'es_mx';  
 }
 
 // Bootstrap gettext translations as early as possible, but after attempting
