@@ -113,7 +113,6 @@ class Ticket {
     } 
 	// Strobe Technologies Ltd | 20/10/2014 | END - Variables and functions for recording and retrieving time spent
 
-
     function Ticket($id) {
         $this->id = 0;
         $this->load($id);
