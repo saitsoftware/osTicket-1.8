@@ -105,6 +105,7 @@ class Ticket {
             if(!is_numeric($time)){
                 $time = 0.25;
             }else{
+                $time = $time / 60;
                 $time = round($time,2);
             }
         }
