@@ -92,7 +92,7 @@ class Ticket {
             $formatted .= ' Minutos';
         }else if ($time == 60){
             $formatted = $time.' Hora';
-        }else if ($time < 60 ){{
+        }else if ($time < 60 ){
             $formatted = $time.' Minutos';
         }else {
             $formatted = $time.' Horas';
