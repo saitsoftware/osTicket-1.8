@@ -1054,7 +1054,7 @@ Class ThreadEntry {
             .' ,staff_id='.db_input($vars['staffId'])
             .' ,user_id='.db_input($vars['userId'])
             .' ,poster='.db_input($poster)
-			.' ,time_spent='.db_input($time_spent / 60)
+			.' ,time_spent='.db_input(round(($time_spent / 60),2))
             .' ,time_type='.db_input($time_type)
             .' ,source='.db_input($vars['source']);
 			// Strobe Technologies Ltd | 20/10/2014 | Added time_spent & time_type into SQL statement
