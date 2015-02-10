@@ -93,8 +93,7 @@ class Ticket {
         }else if ($time == 1){
             $formatted = $time.' Hora';
         }else{
-            var $t = ($time % 1);
-            $formatted = $t.' Horas y'.($time-$t)*60.' Minutos';
+            $formatted = $time.' Horas';
         }
         return $formatted;
     }
