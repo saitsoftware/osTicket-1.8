@@ -105,7 +105,7 @@ class Ticket {
             if(!is_numeric($time)){
                 $time = 0.25;
             }else{
-                $time = round($time,2);
+                $time = round($time,2) / 60;
             }
         }
         $sql = 'UPDATE '.TICKET_TABLE.' SET time_spent=time_spent+'.db_input($time).' WHERE ticket_id='.db_input($this->getId());

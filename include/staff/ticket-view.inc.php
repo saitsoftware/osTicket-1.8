@@ -668,7 +668,7 @@ print $response_form->getField('attachments')->render();
                     <label for="time_spent"><strong>Tiempo Invertido:</strong></label>
                     <input type="text" name="time_spent" size="5"
                     value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
-                    ( 0.085 =  5 minutos, 0.25 = 15 minutos, 0.5 = 30 minutos ,0.75 = 45 minutos)
+                    (en minutos)
                 </td>
             </tr>
             <tr>
@@ -785,7 +785,7 @@ print $note_form->getField('attachments')->render();
                     <label for="time_spent"><strong>Tiempo Invertido:</strong></label>
                     <input type="text" name="time_spent" size="5"
                     value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
-                    ( 0.085 =  5 minutos, 0.25 = 15 minutos, 0.5 = 30 minutos ,0.75 = 45 minutos)
+                    (en minutos)
                 </td>
             </tr>
             <tr>
@@ -989,7 +989,7 @@ print $note_form->getField('attachments')->render();
 				<tr>
 					<td width="200px"><label for="time_spent"><strong>Tiempo Invertido:</strong></label></td>
 					<td><input type="text" name="time_spent" size="5" value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
-						( 0.085 =  5 minutos, 0.25 = 15 minutos, 0.5 = 30 minutos ,0.75 = 45 minutos)
+						(en minutos)
 						<span class="error"><?php echo $errors['time_spent']; ?></span></td>
 				</tr>
 			</table>
