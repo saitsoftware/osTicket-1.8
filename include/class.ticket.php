@@ -106,7 +106,6 @@ class Ticket {
             if(!is_numeric($time)){
                 $time = 0.25;
             }else{
-                $time = $time / 60;
                 $time = round($time,2);
             }
         }
@@ -150,7 +149,7 @@ class Ticket {
 
         $this->id       = $this->ht['ticket_id'];
         $this->number   = $this->ht['number'];
-		$this->timeSpent = $this->ht['time_spent'];		// Strobe Technologies Ltd | 20/10/2014 | Collecting time spent from SQL results
+		$this->timeSpent = $this->ht['time_spent'] / 60;		// Strobe Technologies Ltd | 20/10/2014 | Collecting time spent from SQL results
         $this->_answers = array();
 
         $this->loadDynamicData();
