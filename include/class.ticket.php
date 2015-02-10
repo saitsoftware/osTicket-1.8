@@ -88,11 +88,12 @@ class Ticket {
 	
     function formatTime($time){
         if($time < 60){
-            $formatted = $time*60;
             $formatted .= ' Minutos';
         }else if ($time == 60){
+            $formatted = $time / 60;
             $formatted = $time.' Hora';
         }else{
+            $formatted = $time / 60;
             $formatted = $time.' Horas';
         }
         return $formatted;
