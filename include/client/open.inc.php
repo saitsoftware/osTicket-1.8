@@ -99,7 +99,8 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
     </tr>
     <?php
     } ?>
-    <tr><td colspan=2>&nbsp;<b>Nota:</b> Para anexar cualquier imagen o documento de un tamaño superior a 1 Mb, favor de usar la herramienta <a href="https://justpaste.it/" target="_blank">JustPaste.it</a>.<br></td></tr>
+    <tr><td colspan=2>&nbsp;<b>Nota:</b> Para anexar cualquier imagen favor de usar la herramienta <a href="https://justpaste.it/" target="_blank">JustPaste.it</a>.<br>
+    Para anexar cualquier tipo de archivo ya sean XML, PDF, DOCX, etc., favor de usar la herramienta <a href="http://ge.tt/" target="_blank">ge.tt/</a>. </td></tr>
     </tbody> 
   </table>
 <hr/>
