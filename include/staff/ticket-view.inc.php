@@ -1063,6 +1063,10 @@ print $note_form->getField('attachments')->render();
 </div>
 <script type="text/javascript">
 
+
+$(function() {
+
+
 var startTime = 0
 var start = 0
 var end = 0
@@ -1070,7 +1074,7 @@ var diff = 0
 var timerID = 0
     
     
-$("#content").ready(function() {
+$(function() {
  chronoStart();
  console.log("hola ");
 }
@@ -1129,7 +1133,8 @@ function chronoStop(){
 
 
 
-$(function() {
+
+
     $(document).on('click', 'a.change-user', function(e) {
         e.preventDefault();
         var tid = <?php echo $ticket->getOwnerId(); ?>;
