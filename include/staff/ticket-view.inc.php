@@ -1070,7 +1070,7 @@ var diff = 0
 var timerID = 0
     
     
-$(document).ready(function() {
+$("#content").ready(function() {
  chronoStart();
  console.log("hola ");
 }
