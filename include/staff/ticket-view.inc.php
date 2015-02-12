@@ -666,7 +666,7 @@ print $response_form->getField('attachments')->render();
                     <?php echo $ticket->getTimeSpent().' ('.$ticket->getRealTimeSpent().')<br />';
                     // show the current time spent (if any) ?>
                     <label for="time_spent"><strong>Tiempo Invertido:</strong></label>
-                    <input type="text" name="time_spent" size="5" value"20"
+                    <input id="time_chrono" type="text" name="time_spent" size="5" 
                     value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
                     (en minutos)
                 </td>
@@ -764,7 +764,7 @@ print $note_form->getField('attachments')->render();
                     <?php echo $ticket->getTimeSpent().' ('.$ticket->getRealTimeSpent().')<br />';
                     // show the current time spent (if any) ?>
                     <label for="time_spent"><strong>Tiempo Invertido:</strong></label>
-                    <input  type="text" name="time_spent" size="5" value="25">
+                    <input type="text" name="time_spent" size="5"
                     value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
                     (en minutos)
                 </td>
@@ -1059,6 +1059,9 @@ print $note_form->getField('attachments')->render();
 </div>
 <script type="text/javascript">
 
+window.onload = function() {
+  chronoStart();
+}
 
 var startTime = 0
 var start = 0
@@ -1085,7 +1088,7 @@ function chrono(){
     else if(msec < 100){
         msec = "0" +msec
     }
-    document.getElementById("chronotime").innerHTML = hr + ":" + min + ":" + sec + ":" + msec
+    document.getElementById("time_chrono").value = hr + ":" + min + ":" + sec ;
     timerID = setTimeout("chrono()", 10)
 }
 function chronoStart(){
