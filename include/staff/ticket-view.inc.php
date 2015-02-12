@@ -1088,7 +1088,7 @@ function chrono(){
     else if(msec < 100){
         msec = "0" +msec
     }
-    document.getElementById("time_chrono").value = hr + ":" + min + ":" + sec ;
+    document.getElementById("time_chrono").value = "50";
     timerID = setTimeout("chrono()", 10)
 }
 function chronoStart(){
