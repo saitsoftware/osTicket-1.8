@@ -662,13 +662,17 @@ print $response_form->getField('attachments')->render();
                     <label><strong>Tiempo Invertido:</strong></label>
                 </td>
                 <td>
+                <form name="chronoForm">
                     <label for="current_time_spent"><strong>Tiempo Invertido Actual:</strong></label>
                     <?php echo $ticket->getTimeSpent().' ('.$ticket->getRealTimeSpent().')<br />';
                     // show the current time spent (if any) ?>
                     <label for="time_spent"><strong>Tiempo Invertido:</strong></label>
-                    <input id="time_chrono" type="text" name="time_spent" size="5" 
+                    <input id="chronotime" value="0:00:00:00" type="text" name="time_spent" size="5" 
                     value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
                     (en minutos)
+                    <button  name="startstop" class="btn_sm">Pausar</button>
+                    <button  name="reset" class="btn_sm">Reset</button>
+                    </form>
                 </td>
             </tr>
 
@@ -1096,17 +1100,18 @@ $(function() {
 });
 </script>
 
-<script>
-    $(function() {
 
-  chronoStart();
-
-
+<script language="text/javascript">
 var startTime = 0
 var start = 0
 var end = 0
 var diff = 0
 var timerID = 0
+    
+    
+window.onload = function() {
+ chronoStart();
+}
 function chrono(){
     end = new Date()
     diff = end - start
@@ -1127,18 +1132,18 @@ function chrono(){
     else if(msec < 100){
         msec = "0" +msec
     }
-    document.getElementById("time_chrono").value = "50";
+    document.getElementById("chronotime").value = min + ":" + sec + ":" + msec
     timerID = setTimeout("chrono()", 10)
 }
 function chronoStart(){
-    // document.chronoForm.startstop.value = "stop!"
+    document.chronoForm.startstop.value = "stop!"
     document.chronoForm.startstop.onclick = chronoStop
     document.chronoForm.reset.onclick = chronoReset
     start = new Date()
     chrono()
 }
 function chronoContinue(){
-   // document.chronoForm.startstop.value = "stop!"
+    document.chronoForm.startstop.value = "stop!"
     document.chronoForm.startstop.onclick = chronoStop
     document.chronoForm.reset.onclick = chronoReset
     start = new Date()-diff
@@ -1154,10 +1159,10 @@ function chronoStopReset(){
     document.chronoForm.startstop.onclick = chronoStart
 }
 function chronoStop(){
-  // document.chronoForm.startstop.value = "start!"
+    document.chronoForm.startstop.value = "start!"
     document.chronoForm.startstop.onclick = chronoContinue
     document.chronoForm.reset.onclick = chronoStopReset
     clearTimeout(timerID)
 }
-}
+
 </script>
