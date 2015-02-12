@@ -1072,6 +1072,7 @@ var timerID = 0
     
 $(document).ready(function() {
  chronoStart();
+ console.log("hola ");
 }
 function chrono(){
     end = new Date()
@@ -1166,7 +1167,3 @@ $(function() {
 </script>
 
 
-<script language="text/javascript">
-
-
-</script>
