@@ -437,9 +437,9 @@ if ($results) {
                 }
                 $tid=$row['number'];
 
-                $subject = Format::truncate($subject_field->display(
+                $subject = $subject_field->display(
                     $subject_field->to_php($row['subject']) ?: $row['subject']
-                ), 40);
+                );
                 $threadcount=$row['thread_count'];
                 if(!strcasecmp($row['state'],'open') && !$row['isanswered'] && !$row['lock_id']) {
                     $tid=sprintf('<b>%s</b>',$tid);

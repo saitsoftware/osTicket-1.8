@@ -164,9 +164,9 @@ $negorder=$order=='DESC'?'ASC':'DESC'; //Negate the sorting
         $defaultDept=Dept::getDefaultDeptName(); //Default public dept.
         while ($row = db_fetch_array($res)) {
             $dept= $row['ispublic']? $row['dept_name'] : $defaultDept;
-            $subject = Format::truncate($subject_field->display(
+            $subject = $subject_field->display(
                 $subject_field->to_php($row['subject']) ?: $row['subject']
-            ), 40);
+            );
             if($row['attachments'])
                 $subject.='  &nbsp;&nbsp;<span class="Icon file"></span>';
 

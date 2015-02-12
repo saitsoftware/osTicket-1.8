@@ -124,7 +124,7 @@ if ($results) { ?>
 
         $status = ucfirst($row['status']);
         $tid=$row['number'];
-        $subject = Format::htmlchars(Format::truncate($row['subject'],40));
+        $subject = Format::htmlchars($row['subject']);
         $threadcount=$row['thread_count'];
         ?>
         <tr id="<?php echo $row['ticket_id']; ?>">
