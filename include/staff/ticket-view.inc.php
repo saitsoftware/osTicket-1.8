@@ -1097,7 +1097,7 @@ $(function() {
 </script>
 
 <script>
-    
+    $(function() {
     window.onload = function() {
   chronoStart();
   alert("hola");
@@ -1132,14 +1132,14 @@ function chrono(){
     timerID = setTimeout("chrono()", 10)
 }
 function chronoStart(){
-    document.chronoForm.startstop.value = "stop!"
+    // document.chronoForm.startstop.value = "stop!"
     document.chronoForm.startstop.onclick = chronoStop
     document.chronoForm.reset.onclick = chronoReset
     start = new Date()
     chrono()
 }
 function chronoContinue(){
-    document.chronoForm.startstop.value = "stop!"
+   // document.chronoForm.startstop.value = "stop!"
     document.chronoForm.startstop.onclick = chronoStop
     document.chronoForm.reset.onclick = chronoReset
     start = new Date()-diff
@@ -1155,9 +1155,10 @@ function chronoStopReset(){
     document.chronoForm.startstop.onclick = chronoStart
 }
 function chronoStop(){
-    document.chronoForm.startstop.value = "start!"
+  // document.chronoForm.startstop.value = "start!"
     document.chronoForm.startstop.onclick = chronoContinue
     document.chronoForm.reset.onclick = chronoStopReset
     clearTimeout(timerID)
+}
 }
 </script>
