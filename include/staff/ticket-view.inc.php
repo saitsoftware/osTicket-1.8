@@ -1098,10 +1098,9 @@ $(function() {
 
 <script>
     $(function() {
-    window.onload = function() {
+
   chronoStart();
-  alert("hola");
-}
+
 
 var startTime = 0
 var start = 0
