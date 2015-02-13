@@ -1088,7 +1088,7 @@ function chrono(){
         min =  min;
     }
     if (min < 1){
-        document.getElementById("time").value =   1;
+        document.getElementById("time").value = "1";
     }
     if (min > 1){
         document.getElementById("time").value =  min;
