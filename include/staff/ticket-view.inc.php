@@ -1064,6 +1064,8 @@ print $note_form->getField('attachments')->render();
 <script type="text/javascript">
 
 
+console.log("test javascript");
+
 $(function() {
 
 
