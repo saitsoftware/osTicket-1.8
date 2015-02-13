@@ -662,7 +662,7 @@ print $response_form->getField('attachments')->render();
                     <label><strong>Tiempo Invertido:</strong></label>
                 </td>
                 <td>
-                <form name="chronoForm">
+               
                     <label for="current_time_spent"><strong>Tiempo Invertido Actual:</strong></label>
                     <?php echo $ticket->getTimeSpent().' ('.$ticket->getRealTimeSpent().')<br />';
                     // show the current time spent (if any) ?>
@@ -670,10 +670,10 @@ print $response_form->getField('attachments')->render();
                     <input id="chronotime" value="0:00:00:00" type="text" name="time_spent" size="10" 
                     value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
                     (en minutos)
-                    
+                <!--     
                     <input   class="btn_sm"  type="button" name="startstop" value="start!" onClick="chronoStart()" />
-    <input   class="btn_sm"  type="button" name="reset" value="Reset" onClick="chronoReset()" />
-                    </form>
+                    <input   class="btn_sm"  type="button" name="reset" value="Reset" onClick="chronoReset()" /> -->
+                
                 </td>
             </tr>
 
