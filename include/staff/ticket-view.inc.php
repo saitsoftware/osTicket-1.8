@@ -670,8 +670,9 @@ print $response_form->getField('attachments')->render();
                     <input id="chronotime" value="0:00:00:00" type="text" name="time_spent" size="10" 
                     value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
                     (en minutos)
-                    <button  name="startstop" class="btn_sm">Pausar</button>
-                    <button  name="reset" class="btn_sm">Reset</button>
+                    
+                    <input   class="btn_sm"  type="button" name="startstop" value="start!" onClick="chronoStart()" />
+    <input   class="btn_sm"  type="button" name="reset" value="Reset" onClick="chronoReset()" />
                     </form>
                 </td>
             </tr>
@@ -1066,8 +1067,6 @@ print $note_form->getField('attachments')->render();
 
 console.log("test javascript");
 
-$(function() {
-
 
 var startTime = 0
 var start = 0
@@ -1076,9 +1075,8 @@ var diff = 0
 var timerID = 0
     
     
-$(function() {
+window.onload = function() {
  chronoStart();
- console.log("hola ");
 }
 function chrono(){
     end = new Date()
@@ -1100,39 +1098,38 @@ function chrono(){
     else if(msec < 100){
         msec = "0" +msec
     }
-    document.getElementById("chronotime").value = min + ":" + sec + ":" + msec;
+    document.getElementById("chronotime").value = min + ":" + sec + ":" + msec
     timerID = setTimeout("chrono()", 10)
 }
 function chronoStart(){
-    document.chronoForm.startstop.value = "stop!"
-    document.chronoForm.startstop.onclick = chronoStop
-    document.chronoForm.reset.onclick = chronoReset
+    document.getElementsByName("startstop")[0].value = "Pausar"
+    document.getElementsByName("startstop")[0].onclick = chronoStop
+    document.getElementsByName("reset")[0].onclick = chronoReset
     start = new Date()
     chrono()
 }
 function chronoContinue(){
-    document.chronoForm.startstop.value = "stop!"
-    document.chronoForm.startstop.onclick = chronoStop
-    document.chronoForm.reset.onclick = chronoReset
+    document.getElementsByName("startstop")[0].value = "Pausar"
+    document.getElementsByName("startstop")[0].onclick = chronoStop
+    document.getElementsByName("reset")[0].onclick = chronoReset
     start = new Date()-diff
     start = new Date(start)
     chrono()
 }
 function chronoReset(){
-    document.getElementById("chronotime").innerHTML = "0:00:00:000"
+    document.getElementById("chronotime").value = "00:00:000"
     start = new Date()
 }
 function chronoStopReset(){
-    document.getElementById("chronotime").innerHTML = "0:00:00:000"
-    document.chronoForm.startstop.onclick = chronoStart
+    document.getElementById("chronotime").value = "00:00:000"
+    document.getElementsByName("startstop")[0].onclick = chronoStart
 }
 function chronoStop(){
-    document.chronoForm.startstop.value = "start!"
-    document.chronoForm.startstop.onclick = chronoContinue
-    document.chronoForm.reset.onclick = chronoStopReset
+    document.getElementsByName("startstop")[0].value = "Pausar"
+    document.getElementsByName("startstop")[0].onclick = chronoContinue
+     document.getElementsByName("reset")[0].onclick = chronoStopReset
     clearTimeout(timerID)
 }
-
 
 
 
