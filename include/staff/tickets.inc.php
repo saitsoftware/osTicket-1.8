@@ -374,15 +374,16 @@ if ($results) {
             <th width="170">
                 <a <?php echo $name_sort; ?> href="tickets.php?sort=name&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                      title="<?php echo sprintf(__('Sort by %s %s'), __('Name'), __($negorder)); ?>"><?php echo __('From');?></a></th>
-           
+        
                 <th width="60">
                     <a <?php echo $status_sort; ?> href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Status'), __($negorder)); ?>"><?php echo __('Status');?></a></th>
-          
+
                 <th width="60" <?php echo $pri_sort;?>>
                     <a <?php echo $pri_sort; ?> href="tickets.php?sort=pri&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Priority'), __($negorder)); ?>"><?php echo __('Priority');?></a></th>
-          
+            <?php
+            }
 
             if($showassigned ) {
                 //Closed by
