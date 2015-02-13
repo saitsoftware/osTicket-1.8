@@ -671,8 +671,8 @@ print $response_form->getField('attachments')->render();
                     value="<?php if(isset($_POST['time_spent'])) echo $_POST['time_spent'];?>" />
                     (en minutos)
                     
-                    <input   class="btn_sm"  type="button" name="startstop" value="start!" onClick="chronoStart()" />
-                    <input   class="btn_sm"  type="button" name="reset" value="Reset" onClick="chronoReset()" />
+            <!--         <input   class="btn_sm"  type="button" name="startstop" value="start!" onClick="chronoStart()" />
+                    <input   class="btn_sm"  type="button" name="reset" value="Reset" onClick="chronoReset()" /> -->
                 
                 </td>
             </tr>
@@ -1063,11 +1063,7 @@ print $note_form->getField('attachments')->render();
     <div class="clear"></div>
 </div>
 <script type="text/javascript">
-
-
-console.log("test javascript");
-
-
+$(function() {
     $(document).on('click', 'a.change-user', function(e) {
         e.preventDefault();
         var tid = <?php echo $ticket->getOwnerId(); ?>;
@@ -1102,6 +1098,5 @@ console.log("test javascript");
 }();
 <?php } ?>
 });
-</script>
 
 
