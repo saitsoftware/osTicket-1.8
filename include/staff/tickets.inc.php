@@ -699,6 +699,11 @@ if ($results) {
         </p>
     </form>
 </div>
+
+<script type="text/javascript">
+    document.getElementById("content").style.paddingLeft= "40px";
+</script>
+
 <script type="text/javascript">
 $(function() {
     $(document).off('.tickets');
