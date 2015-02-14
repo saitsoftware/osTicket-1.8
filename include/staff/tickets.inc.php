@@ -701,7 +701,7 @@ if ($results) {
 </div>
 
 <script type="text/javascript">
-    document.getElementById("content").style.paddingLeft= "40px";
+    document.getElementById("content").style.paddingLeft= "15px";
 </script>
 
 <script type="text/javascript">
