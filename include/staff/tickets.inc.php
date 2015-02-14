@@ -356,7 +356,6 @@ if ($results) {
  <input type="hidden" name="do" id="action" value="" >
  <input type="hidden" name="status" value="<?php echo
  Format::htmlchars($_REQUEST['status'], true); ?>" >
- hola mundo
  <table class="list" border="0" cellspacing="1" cellpadding="2" width="940">
     <thead>
         <tr>
@@ -375,19 +374,18 @@ if ($results) {
             <th width="170">
                 <a <?php echo $name_sort; ?> href="tickets.php?sort=name&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                      title="<?php echo sprintf(__('Sort by %s %s'), __('Name'), __($negorder)); ?>"><?php echo __('From');?></a></th>
-
             <?php
-            if($search && !$status) { ?>
+            if(!$status) { ?>
                 <th width="60">
                     <a <?php echo $status_sort; ?> href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Status'), __($negorder)); ?>"><?php echo __('Status');?></a></th>
             <?php
-            } else { ?>
+            } ?>
                 <th width="60" <?php echo $pri_sort;?>>
                     <a <?php echo $pri_sort; ?> href="tickets.php?sort=pri&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Priority'), __($negorder)); ?>"><?php echo __('Priority');?></a></th>
             <?php
-            }
+            
 
             if($showassigned ) {
                 //Closed by
@@ -479,17 +477,15 @@ if ($results) {
                 <td nowrap>&nbsp;<?php echo Format::htmlchars(
                         Format::truncate($row['name'], 22, strpos($row['name'], '@'))); ?>&nbsp;</td>
                 <?php
-                if($search && !$status){
+                if(!$status){
                     $displaystatus=ucfirst($row['status']);
                     if(!strcasecmp($row['state'],'open'))
                         $displaystatus="<b>$displaystatus</b>";
                     echo "<td>$displaystatus</td>";
-                } else { ?>
+                } ?>
                 <td class="nohover" align="center" style="background-color:<?php echo $row['priority_color']; ?>;">
                     <?php echo $row['priority_desc']; ?></td>
-                <?php
-                }
-                ?>
+       
                 <td nowrap>&nbsp;<?php echo $lc; ?></td>
             </tr>
             <?php
