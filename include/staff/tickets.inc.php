@@ -211,7 +211,7 @@ $$x=' class="'.strtolower($order).'" ';
 if($_GET['limit'])
     $qs += array('limit' => $_GET['limit']);
 
-$qselect ='SELECT ticket.ticket_id,tlock.lock_id,ticket.`number`,ticket.dept_id,ticket.staff_id,ticket.team_id '
+$qselect ='SELECT ticket.ticket_id,tlock.lock_id,ticket.`number`,ticket.dept_id,ticket.staff_id,ticket.team_id ,ticket.topic_id'
     .' ,user.name'
     .' ,email.address as email, dept.dept_name, status.state '
          .' ,status.name as status,ticket.source,ticket.isoverdue,ticket.isanswered,ticket.created ';
@@ -284,6 +284,7 @@ $negorder=$order=='DESC'?'ASC':'DESC'; //Negate the sorting..
 $results = array();
 while ($row = db_fetch_array($res)) {
     $results[$row['ticket_id']] = $row;
+
 }
 
 // Fetch attachment and thread entry counts
@@ -399,11 +400,16 @@ if ($results) {
                 <?php
                 }
             } ?>
-
                 <th width="150">
                     <a <?php echo $dept_sort; ?> href="tickets.php?sort=dept&order=<?php echo $negorder;?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Department'), __($negorder)); ?>"><?php echo __('Department');?></a></th>
-       
+       <?php
+            if($showassigned ) {?>
+                        <th width="150">
+                    <a <?php echo $dept_sort; ?> href="tickets.php?sort=dept&order=<?php echo $negorder;?><?php echo $qstr; ?>"
+                        title="<?php echo sprintf(__('Sort by %s %s'), __('Help Topic'), __($negorder)); ?>"><?php echo __('Help Topic');?></a></th>
+                           <?php
+            } ?>
         </tr>
      </thead>
      <tbody>
@@ -433,9 +439,14 @@ if ($results) {
                 }else{
                     $lc=Format::truncate($row['dept_name'],40);
                 }
-            if($showassigned) {
-                $dp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['dept_name'],40));
-            }
+
+                if($showassigned) {
+                    $dp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['dept_name'],40));
+                    
+                    if(($row['topic_id'])){
+                    $tp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['helptopic'],40));
+                    }
+                }
 
                 $tid=$row['number'];
 
@@ -490,11 +501,14 @@ if ($results) {
        
                 <td nowrap>&nbsp;<?php echo $lc; ?></td>
 
-                <?php  if($showassigned) {?>
+                <?php
+                if($showassigned) {?>
                 <td nowrap>&nbsp;<?php echo $dp; ?></td>
+                <td nowrap>&nbsp;<?php echo $tp; ?></td>
                  <?php 
                  }
                  ?>
+
             </tr>
             <?php
             } //end of while.
@@ -504,7 +518,7 @@ if ($results) {
     </tbody>
     <tfoot>
      <tr>
-        <td colspan="9">
+        <td colspan="10">
             <?php if($res && $num && $thisstaff->canManageTickets()){ ?>
             <?php echo __('Select');?>:&nbsp;
             <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
