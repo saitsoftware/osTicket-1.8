@@ -385,8 +385,6 @@ if ($results) {
                     <a <?php echo $pri_sort; ?> href="tickets.php?sort=pri&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Priority'), __($negorder)); ?>"><?php echo __('Priority');?></a></th>
             <?php
-            
-
             if($showassigned ) {
                 //Closed by
                 if(!strcasecmp($status,'closed')) { ?>
@@ -400,12 +398,12 @@ if ($results) {
                             title="<?php echo sprintf(__('Sort by %s %s'), __('Assignee'), __($negorder)); ?>"><?php echo __('Assigned To'); ?></a></th>
                 <?php
                 }
-            } else { ?>
+            } ?>
+
                 <th width="150">
                     <a <?php echo $dept_sort; ?> href="tickets.php?sort=dept&order=<?php echo $negorder;?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Department'), __($negorder)); ?>"><?php echo __('Department');?></a></th>
-            <?php
-            } ?>
+       
         </tr>
      </thead>
      <tbody>
@@ -435,6 +433,10 @@ if ($results) {
                 }else{
                     $lc=Format::truncate($row['dept_name'],40);
                 }
+            if($showassigned) {
+                $dp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['dept_name'],40));
+            }
+
                 $tid=$row['number'];
 
                 $subject = $subject_field->display(
@@ -487,6 +489,12 @@ if ($results) {
                     <?php echo $row['priority_desc']; ?></td>
        
                 <td nowrap>&nbsp;<?php echo $lc; ?></td>
+
+                <?php  if($showassigned) {?>
+                <td nowrap>&nbsp;<?php echo $dp; ?></td>
+                 <?php 
+                 }
+                 ?>
             </tr>
             <?php
             } //end of while.
@@ -496,7 +504,7 @@ if ($results) {
     </tbody>
     <tfoot>
      <tr>
-        <td colspan="7">
+        <td colspan="9">
             <?php if($res && $num && $thisstaff->canManageTickets()){ ?>
             <?php echo __('Select');?>:&nbsp;
             <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
