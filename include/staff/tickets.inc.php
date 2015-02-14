@@ -403,13 +403,11 @@ if ($results) {
                 <th width="150">
                     <a <?php echo $dept_sort; ?> href="tickets.php?sort=dept&order=<?php echo $negorder;?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Department'), __($negorder)); ?>"><?php echo __('Department');?></a></th>
-       <?php
-            if($showassigned ) {?>
-                        <th width="150">
+
+                <th width="150">
                     <a <?php echo $dept_sort; ?> href="tickets.php?sort=dept&order=<?php echo $negorder;?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Help Topic'), __($negorder)); ?>"><?php echo __('Help Topic');?></a></th>
-                           <?php
-            } ?>
+            
         </tr>
      </thead>
      <tbody>
@@ -441,11 +439,12 @@ if ($results) {
                 }
 
                 if($showassigned) {
-                    $dp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['dept_name'],40));
-                    
-                    if(($row['topic_id'])){
+                    $dp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['dept_name'],40)); 
+                 
+                }
+
+                if($row['topic_id']){
                     $tp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['helptopic'],40));
-                    }
                 }
 
                 $tid=$row['number'];
@@ -504,11 +503,10 @@ if ($results) {
                 <?php
                 if($showassigned) {?>
                 <td nowrap>&nbsp;<?php echo $dp; ?></td>
-                <td nowrap>&nbsp;<?php echo $tp; ?></td>
                  <?php 
                  }
                  ?>
-
+                <td nowrap>&nbsp;<?php echo $tp; ?></td>
             </tr>
             <?php
             } //end of while.
