@@ -1064,84 +1064,6 @@ print $note_form->getField('attachments')->render();
 </div>
 
 <script type="text/javascript">
-    
-
-var startTime = 0;
-var start = 0;
-var end = 0;
-var diff = 0;
-var timerID = 0;
-    
-    
-
- chronoStart();
-
-function chrono(){
-    end = new Date();
-    diff = end - start;
-    diff = new Date(diff);
-    var msec = diff.getMilliseconds();
-    var sec = diff.getSeconds();
-    var min = diff.getMinutes();
-    var hr = diff.getHours()-1;
-    if (min < 10){
-        min =  min;
-    }
-    if (min < 1){
-        document.getElementById("time").value = "1";
-    }
-    if (min > 1){
-        document.getElementById("time").value =  min;
-    }
-    if (sec < 10){
-        sec = "0" + sec;
-    }
-    if(msec < 10){
-        msec = "00" +msec;
-    }
-    else if(msec < 100){
-        msec = "0" +msec;
-    }
-    document.getElementById("chronotime").innerHTML = min + ":" + sec + ":" + msec;
-    //document.getElementById("time").value = min;
-    timerID = setTimeout("chrono()", 10);
-}
-function chronoStart(){
-    document.getElementsByName("startstop")[0].value = "Pausar";
-    document.getElementsByName("startstop")[0].onclick = chronoStop;
-    document.getElementsByName("reset")[0].onclick = chronoReset;
-    start = new Date()
-    chrono()
-}
-function chronoContinue(){
-    document.getElementsByName("startstop")[0].value = "Pausar";
-    document.getElementsByName("startstop")[0].onclick = chronoStop;
-    document.getElementsByName("reset")[0].onclick = chronoReset;
-    start = new Date()-diff;
-    start = new Date(start);
-    chrono();
-}
-function chronoReset(){
-    document.getElementById("chronotime").innerHTML  = "00:00:000";
-    start = new Date();
-}
-function chronoStopReset(){
-    document.getElementById("chronotime").innerHTML  = "00:00:000";
-    document.getElementsByName("startstop")[0].onclick = chronoStart;
-}
-function chronoStop(){
-    document.getElementsByName("startstop")[0].value = "Iniciar";
-    document.getElementsByName("startstop")[0].onclick = chronoContinue;
-     document.getElementsByName("reset")[0].onclick = chronoStopReset;
-    clearTimeout(timerID);
-}
-
-
-
-
-</script>
-
-<script type="text/javascript">
 $(function() {
 
     $(document).on('click', 'a.change-user', function(e) {
@@ -1180,3 +1102,89 @@ $(function() {
 });
 </script>
 
+
+            <?php // if spent time fields (thread open), load chrono script 
+            if ($cfg->isThreadTime()) {
+            if($ticket->isOpen()) { ?>
+
+<script type="text/javascript">
+    
+ var startTime = 0;
+    var start = 0;
+    var end = 0;
+    var diff = 0;
+    var timerID = 0;
+
+    chronoStart();
+
+    function chrono() {
+        end = new Date();
+        diff = end - start;
+        diff = new Date(diff);
+        var msec = diff.getMilliseconds();
+        var sec = diff.getSeconds();
+        var min = diff.getMinutes();
+        var hr = diff.getHours() - 1;
+        if (min < 10) {
+            min = "0"+min;
+        }
+        if (min < 1) {
+            document.getElementById("time").value = "1";
+        }
+        if (min > 1) {
+            document.getElementById("time").value = min;
+        }
+        if (sec < 10) {
+            sec = "0" + sec;
+        }
+        if (msec < 10) {
+            msec = "00" + msec;
+        } else if (msec < 100) {
+            msec = "0" + msec;
+        }
+        document.getElementById("chronotime").innerHTML = min + ":" + sec;
+        //document.getElementById("time").value = min;
+        timerID = setTimeout("chrono()", 10);
+    }
+
+    function chronoStart() {
+        document.getElementsByName("startstop")[0].value = "Pausar";
+        document.getElementsByName("startstop")[0].onclick = chronoStop;
+        document.getElementsByName("reset")[0].onclick = chronoReset;
+        start = new Date()
+        chrono()
+    }
+
+    function chronoContinue() {
+        document.getElementsByName("startstop")[0].value = "Pausar";
+        document.getElementsByName("startstop")[0].onclick = chronoStop;
+        document.getElementsByName("reset")[0].onclick = chronoReset;
+        start = new Date() - diff;
+        start = new Date(start);
+        chrono();
+    }
+
+    function chronoReset() {
+        document.getElementById("chronotime").innerHTML = "00:00";
+        start = new Date();
+    }
+
+    function chronoStopReset() {
+        document.getElementById("chronotime").innerHTML = "00:00";
+        document.getElementsByName("startstop")[0].onclick = chronoStart;
+    }
+
+    function chronoStop() {
+        document.getElementsByName("startstop")[0].value = "Iniciar";
+        document.getElementsByName("startstop")[0].onclick = chronoContinue;
+        document.getElementsByName("reset")[0].onclick = chronoStopReset;
+        clearTimeout(timerID);
+    }
+
+</script>
+
+<?php
+    }
+}
+
+?>
