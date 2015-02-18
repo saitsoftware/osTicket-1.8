@@ -369,7 +369,7 @@ if ($results) {
 	        <th width="70">
                 <a  <?php echo $date_sort; ?> href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Date'), __($negorder)); ?>"><?php echo __('Date'); ?></a></th>
-	        <th width="280">
+	        <th width="340">
                  <a <?php echo $subj_sort; ?> href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Subject'), __($negorder)); ?>"><?php echo __('Subject'); ?></a></th>
             <th width="170">
@@ -429,9 +429,9 @@ if ($results) {
                 $lc='';
                 if($showassigned) {
                     if($row['staff_id'])
-                        $lc=sprintf('<span class="Icon staffAssigned">%s</span>',Format::truncate($row['staff'],25));
+                        $lc=sprintf('<span class="staffAssigned">%s</span>',Format::truncate($row['staff'],25));
                     elseif($row['team_id'])
-                        $lc=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['team'],25));
+                        $lc=sprintf('<span class="teamAssigned">%s</span>',Format::truncate($row['team'],25));
                     else
                         $lc=' ';
                 }else{
@@ -439,12 +439,12 @@ if ($results) {
                 }
 
                 if($showassigned) {
-                    $dp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['dept_name'],25)); 
+                    $dp=sprintf('<span class="teamAssigned">%s</span>',Format::truncate($row['dept_name'],25)); 
                  
                 }
 
                 if($row['topic_id']){
-                    $tp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['helptopic'],25));
+                    $tp=sprintf('<span>%s</span>',Format::truncate($row['helptopic'],25));
                 }
 
                 $tid=$row['number'];
