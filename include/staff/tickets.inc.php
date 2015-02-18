@@ -429,22 +429,22 @@ if ($results) {
                 $lc='';
                 if($showassigned) {
                     if($row['staff_id'])
-                        $lc=sprintf('<span class="Icon staffAssigned">%s</span>',Format::truncate($row['staff'],40));
+                        $lc=sprintf('<span class="Icon staffAssigned">%s</span>',Format::truncate($row['staff'],30));
                     elseif($row['team_id'])
-                        $lc=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['team'],40));
+                        $lc=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['team'],30));
                     else
                         $lc=' ';
                 }else{
-                    $lc=Format::truncate($row['dept_name'],40);
+                    $lc=Format::truncate($row['dept_name'],30);
                 }
 
                 if($showassigned) {
-                    $dp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['dept_name'],40)); 
+                    $dp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['dept_name'],25)); 
                  
                 }
 
                 if($row['topic_id']){
-                    $tp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['helptopic'],40));
+                    $tp=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['helptopic'],25));
                 }
 
                 $tid=$row['number'];
@@ -486,8 +486,8 @@ if ($results) {
                             echo '<i class="icon-fixed-width icon-paperclip"></i>&nbsp;';
                     ?>
                 </td>
-                <td nowrap>&nbsp;<?php echo Format::htmlchars(
-                        Format::truncate($row['name'], 22, strpos($row['name'], '@'))); ?>&nbsp;</td>
+                <td nowrap><?php echo Format::htmlchars(
+                        Format::truncate($row['name'], 20, strpos($row['name'], '@'))); ?></td>
                 <?php
                 if(!$status){
                     $displaystatus=ucfirst($row['status']);
