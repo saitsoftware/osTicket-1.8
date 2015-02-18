@@ -389,22 +389,22 @@ if ($results) {
             if($showassigned ) {
                 //Closed by
                 if(!strcasecmp($status,'closed')) { ?>
-                    <th width="150">
+                    <th width="120">
                         <a <?php echo $staff_sort; ?> href="tickets.php?sort=staff&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                             title="<?php echo sprintf(__('Sort by %s %s'), __("Closing Agent's Name"), __($negorder)); ?>"><?php echo __('Closed By'); ?></a></th>
                 <?php
                 } else { //assigned to ?>
-                    <th width="150">
+                    <th width="120">
                         <a <?php echo $assignee_sort; ?> href="tickets.php?sort=assignee&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                             title="<?php echo sprintf(__('Sort by %s %s'), __('Assignee'), __($negorder)); ?>"><?php echo __('Assigned To'); ?></a></th>
                 <?php
                 }
             } ?>
-                <th width="150">
+                <th width="100">
                     <a <?php echo $dept_sort; ?> href="tickets.php?sort=dept&order=<?php echo $negorder;?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Department'), __($negorder)); ?>"><?php echo __('Department');?></a></th>
 
-                <th width="150">
+                <th width="100">
                     <a <?php echo $dept_sort; ?> href="tickets.php?sort=dept&order=<?php echo $negorder;?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Help Topic'), __($negorder)); ?>"><?php echo __('Help Topic');?></a></th>
             
@@ -498,15 +498,15 @@ if ($results) {
                 <td class="nohover" align="center" style="background-color:<?php echo $row['priority_color']; ?>;">
                     <?php echo $row['priority_desc']; ?></td>
        
-                <td nowrap>&nbsp;<?php echo $lc; ?></td>
+                <td nowrap><?php echo $lc; ?></td>
 
                 <?php
                 if($showassigned) {?>
-                <td nowrap>&nbsp;<?php echo $dp; ?></td>
+                <td nowrap><?php echo $dp; ?></td>
                  <?php 
                  }
                  ?>
-                <td nowrap>&nbsp;<?php echo $tp; ?></td>
+                <td nowrap><?php echo $tp; ?></td>
             </tr>
             <?php
             } //end of while.
