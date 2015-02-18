@@ -369,7 +369,7 @@ if ($results) {
 	        <th width="70">
                 <a  <?php echo $date_sort; ?> href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Date'), __($negorder)); ?>"><?php echo __('Date'); ?></a></th>
-	        <th width="340">
+	        <th width="490">
                  <a <?php echo $subj_sort; ?> href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Subject'), __($negorder)); ?>"><?php echo __('Subject'); ?></a></th>
             <th width="170">
@@ -393,17 +393,18 @@ if ($results) {
                         <a <?php echo $staff_sort; ?> href="tickets.php?sort=staff&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                             title="<?php echo sprintf(__('Sort by %s %s'), __("Closing Agent's Name"), __($negorder)); ?>"><?php echo __('Closed By'); ?></a></th>
                 <?php
-                } else { //assigned to ?>
-                    <th width="120">
-                        <a <?php echo $assignee_sort; ?> href="tickets.php?sort=assignee&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
-                            title="<?php echo sprintf(__('Sort by %s %s'), __('Assignee'), __($negorder)); ?>"><?php echo __('Assigned To'); ?></a></th>
+                } ?>
+         
                 <?php
-                }
-            } ?>
+                 } ?>
+
+                    <?php
+            if($showassigned ) {
+                if(strcasecmp($status,'closed')) { ?>
                 <th width="100">
                     <a <?php echo $dept_sort; ?> href="tickets.php?sort=dept&order=<?php echo $negorder;?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Department'), __($negorder)); ?>"><?php echo __('Depto');?></a></th>
-
+<?php }  }?>
                 <th width="100">
                     <a <?php echo $dept_sort; ?> href="tickets.php?sort=dept&order=<?php echo $negorder;?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Help Topic'), __($negorder)); ?>"><?php echo __('Help Topic');?></a></th>
@@ -497,12 +498,12 @@ if ($results) {
                 } ?>
                 <td class="nohover" align="center" style="background-color:<?php echo $row['priority_color']; ?>;">
                     <?php echo $row['priority_desc']; ?></td>
-       
-                <td nowrap><?php echo $lc; ?></td>
 
                 <?php
                 if($showassigned) {?>
-                <td nowrap><?php echo $dp; ?></td>
+                <td nowrap><?php echo $dp; ?><br>
+                <?php echo $lc; ?>
+                </td>
                  <?php 
                  }
                  ?>
