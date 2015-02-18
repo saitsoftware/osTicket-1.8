@@ -429,9 +429,9 @@ if ($results) {
                 $lc='';
                 if($showassigned) {
                     if($row['staff_id'])
-                        $lc=sprintf('<span class="Icon staffAssigned">%s</span>',Format::truncate($row['staff'],30));
+                        $lc=sprintf('<span class="Icon staffAssigned">%s</span>',Format::truncate($row['staff'],25));
                     elseif($row['team_id'])
-                        $lc=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['team'],30));
+                        $lc=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['team'],25));
                     else
                         $lc=' ';
                 }else{
