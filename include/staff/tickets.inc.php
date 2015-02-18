@@ -357,7 +357,7 @@ if ($results) {
  <input type="hidden" name="do" id="action" value="" >
  <input type="hidden" name="status" value="<?php echo
  Format::htmlchars($_REQUEST['status'], true); ?>" >
- <table class="list" border="0" cellspacing="1" cellpadding="2" width="1080">
+ <table class="list" border="0" cellspacing="1" cellpadding="2" width="1110">
     <thead>
         <tr>
             <?php if($thisstaff->canManageTickets()) { ?>
