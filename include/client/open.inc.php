@@ -49,7 +49,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                 if($topics=Topic::getPublicHelpTopics()) {
                     foreach($topics as $id =>$name) {
                         echo sprintf('<option value="%d" %s>%s</option>',
-                                $id, ($info['topicId']==$id)?'selected="selected"':'', $name);
+                                $id, ($info['topicId']==$id)?'':'', $name);
                     }
                 } else { ?>
                     <option value="0" ><?php echo __('General Inquiry');?></option>
@@ -59,6 +59,26 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
             <font class="error">*&nbsp;<?php echo $errors['topicId']; ?></font>
         </td>
     </tr>
+    
+            <tr>
+            <td class="required">
+                <?php echo __('Producto');?>:
+            </td>
+            <td>
+                <select name="producto">
+                    <option value="" selected="selected">&mdash;<?php echo __('Seleccione Producto'); ?>&mdash;</option>
+                    <option value="SAIT Basico" <?php echo ($info['producto']=='SAIT Basico')?'selected="selected"':''; ?>>SAIT B&aacute;sico</option>
+                    <option value="SAIT ERP" <?php echo ($info['producto']=='SAIT ERP')?'selected="selected"':''; ?>>SAIT ERP</option>
+                    <option value="SAIT Contabilidad" <?php echo ($info['producto']=='SAIT Contabilidad')?'selected="selected"':''; ?>>SAIT Contabilidad</option>
+                    <option value="SAIT Nomina" <?php echo ($info['producto']=='SAIT Nomina')?'selected="selected"':''; ?>>SAIT N&oacute;mina</option>
+                    <option value="SAIT Movil" <?php echo ($info['producto']=='SAIT Movil')?'selected="selected"':''; ?>>SAIT M&oacute;vil</option>
+                    <option value="Boveda (OCF)" <?php echo ($info['producto']=='Boveda')?'selected="selected"':''; ?>>Boveda (OCF)</option>
+                    <option value="F123" <?php echo ($info['producto']=='F123')?'selected="selected"':''; ?>>Factura 123</option>
+                </select>
+                <font class="error">*&nbsp;<?php echo $errors['producto']; ?></font>
+            </td>
+        </tr>
+    
 <?php
         if (!$thisclient) {
             $uform = UserForm::getUserForm()->getForm($_POST);

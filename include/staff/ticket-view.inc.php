@@ -321,6 +321,10 @@ if($ticket->isOverdue())
                     <td><?php echo Format::htmlchars($ticket->getHelpTopic()); ?></td>
                 </tr>
                 <tr>
+                    <th width="100">Producto:</th>
+                    <td><?php echo Format::htmlchars($ticket->getProducto()); ?></td>
+                </tr>
+                <tr>
                     <th nowrap><?php echo __('Last Message');?>:</th>
                     <td><?php echo Format::db_datetime($ticket->getLastMsgDate()); ?></td>
                 </tr>
@@ -652,6 +656,7 @@ print $response_form->getField('attachments')->render();
                     }
                     ?>
                     </select>
+             
                 </td>
             </tr>
 			<?php // Strobe Technologies Ltd | 20/10/2014 | START - Add Time Spent fields to Reply tab

@@ -19,6 +19,7 @@ if ($_POST)
     $info['duedate'] = Format::date($cfg->getDateFormat(),
        strtotime($info['duedate']));
 ?>
+
 <form action="tickets.php?a=open" method="post" id="save"  enctype="multipart/form-data">
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="create">
@@ -123,6 +124,25 @@ if ($_POST)
                     <option value="Other" <?php echo ($info['source']=='Other')?'selected="selected"':''; ?>><?php echo __('Other'); ?></option>
                 </select>
                 &nbsp;<font class="error"><b>*</b>&nbsp;<?php echo $errors['source']; ?></font>
+            </td>
+        </tr>
+        
+        <tr>
+            <td width="160" class="required">
+                <?php echo __('Producto');?>:
+            </td>
+            <td>
+                <select name="producto">
+                    <option value="" selected="selected"><?php echo __('-'); ?></option>
+                    <option value="SAIT Basico" <?php echo ($info['producto']=='SAIT Basico')?'selected="selected"':''; ?>>SAIT B&aacute;sico</option>
+                    <option value="SAIT ERP" <?php echo ($info['producto']=='SAIT ERP')?'selected="selected"':''; ?>>SAIT ERP</option>
+                    <option value="SAIT Contabilidad" <?php echo ($info['producto']=='SAIT Contabilidad')?'selected="selected"':''; ?>>SAIT Contabilidad</option>
+                    <option value="SAIT Nomina" <?php echo ($info['producto']=='SAIT Nomina')?'selected="selected"':''; ?>>SAIT N&oacute;mina</option>
+                    <option value="SAIT Movil" <?php echo ($info['producto']=='SAIT Movil')?'selected="selected"':''; ?>>SAIT M&oacute;vil</option>
+                    <option value="Boveda" <?php echo ($info['producto']=='Boveda')?'selected="selected"':''; ?>>Boveda (OCF)</option>
+                    <option value="F123" <?php echo ($info['producto']=='F123')?'selected="selected"':''; ?>>Factura 123</option>
+                </select>
+                &nbsp;<font class="error"><b>*</b>&nbsp;<?php echo $errors['producto']; ?></font>
             </td>
         </tr>
         <tr>

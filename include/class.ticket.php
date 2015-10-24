@@ -429,7 +429,11 @@ class Ticket {
     function getSource() {
         return $this->ht['source'];
     }
-
+    
+    function getProducto() {
+        return $this->ht['producto'];
+    }
+    
     function getIP() {
         return $this->ht['ip_address'];
     }
@@ -442,6 +446,7 @@ class Ticket {
         global $cfg;
 
         $info=array('source'    =>  $this->getSource(),
+                    'producto'    =>  $this->getProducto(),
                     'topicId'   =>  $this->getTopicId(),
                     'slaId' =>  $this->getSLAId(),
                     'user_id' => $this->getOwnerId(),
@@ -2189,6 +2194,7 @@ class Ticket {
             .' ,topic_id='.db_input($vars['topicId'])
             .' ,sla_id='.db_input($vars['slaId'])
             .' ,source='.db_input($vars['source'])
+            .' ,producto='.db_input($vars['producto'])
             .' ,duedate='.($vars['duedate']?db_input(date('Y-m-d G:i',Misc::dbtime($vars['duedate'].' '.$vars['time']))):'NULL');
 
         if($vars['user_id'])
@@ -2651,6 +2657,7 @@ class Ticket {
         $statusId = $vars['statusId'];
         $deptId = $vars['deptId']; //pre-selected Dept if any.
         $source = ucfirst($vars['source']);
+        $producto = ucfirst($vars['producto']);
 
         // Apply email settings for emailed tickets. Email settings should
         // trump help topic settins if the email has an associated help
@@ -2728,7 +2735,8 @@ class Ticket {
             .' ,dept_id='.db_input($deptId)
             .' ,topic_id='.db_input($topicId)
             .' ,ip_address='.db_input($ipaddress)
-            .' ,source='.db_input($source);
+            .' ,source='.db_input($source)
+            .' ,producto='.db_input($producto);
 
         if (isset($vars['emailId']) && $vars['emailId'])
             $sql.=', email_id='.db_input($vars['emailId']);
@@ -2866,6 +2874,9 @@ class Ticket {
 
         if($vars['source'] && !in_array(strtolower($vars['source']),array('email','phone','other')))
             $errors['source']=sprintf(__('Invalid source given - %s'),Format::htmlchars($vars['source']));
+            
+        if($vars['producto'] && !in_array(strtolower($vars['producto']),array('sait basico','sait contabilidad','sait erp','sait nomina', 'sait movil', 'boveda', 'f123')))
+            $errors['producto']=sprintf(__('Invalid product given - %s'),Format::htmlchars($vars['producto']));
 
         if (!$vars['uid']) {
             //Special validation required here
