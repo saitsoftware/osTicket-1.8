@@ -2875,7 +2875,7 @@ class Ticket {
         if($vars['source'] && !in_array(strtolower($vars['source']),array('email','phone','other')))
             $errors['source']=sprintf(__('Invalid source given - %s'),Format::htmlchars($vars['source']));
             
-        if($vars['producto'] && !in_array(strtolower($vars['producto']),array('sait basico','sait contabilidad','sait erp','sait nomina', 'sait movil', 'boveda', 'f123')))
+        if($vars['producto'] && !in_array(strtolower($vars['producto']),array('sait basico','sait contabilidad','sait erp','sait nomina', 'sait movil', 'boveda', 'f123','enlace')))
             $errors['producto']=sprintf(__('Invalid product given - %s'),Format::htmlchars($vars['producto']));
 
         if (!$vars['uid']) {

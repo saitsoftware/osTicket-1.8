@@ -141,6 +141,7 @@ if ($_POST)
                     <option value="SAIT Movil" <?php echo ($info['producto']=='SAIT Movil')?'selected="selected"':''; ?>>SAIT M&oacute;vil</option>
                     <option value="Boveda" <?php echo ($info['producto']=='Boveda')?'selected="selected"':''; ?>>Boveda (OCF)</option>
                     <option value="F123" <?php echo ($info['producto']=='F123')?'selected="selected"':''; ?>>Factura 123</option>
+                    <option value="Enlace" <?php echo ($info['producto']=='Enlace')?'selected="selected"':''; ?>>Enlace de Sucursales</option>
                 </select>
                 &nbsp;<font class="error"><b>*</b>&nbsp;<?php echo $errors['producto']; ?></font>
             </td>

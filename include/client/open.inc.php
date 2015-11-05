@@ -65,7 +65,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                 <?php echo __('Producto');?>:
             </td>
             <td>
-                <select name="producto">
+                <select name="producto" required="required">
                     <option value="" selected="selected">&mdash;<?php echo __('Seleccione Producto'); ?>&mdash;</option>
                     <option value="SAIT Basico" <?php echo ($info['producto']=='SAIT Basico')?'selected="selected"':''; ?>>SAIT B&aacute;sico</option>
                     <option value="SAIT ERP" <?php echo ($info['producto']=='SAIT ERP')?'selected="selected"':''; ?>>SAIT ERP</option>
@@ -74,6 +74,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                     <option value="SAIT Movil" <?php echo ($info['producto']=='SAIT Movil')?'selected="selected"':''; ?>>SAIT M&oacute;vil</option>
                     <option value="Boveda (OCF)" <?php echo ($info['producto']=='Boveda')?'selected="selected"':''; ?>>Boveda (OCF)</option>
                     <option value="F123" <?php echo ($info['producto']=='F123')?'selected="selected"':''; ?>>Factura 123</option>
+                    <option value="Enlace" <?php echo ($info['producto']=='Enlace')?'selected="selected"':''; ?>>Enlace de Sucursales</option>
                 </select>
                 <font class="error">*&nbsp;<?php echo $errors['producto']; ?></font>
             </td>
