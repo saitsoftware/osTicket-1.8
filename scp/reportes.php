@@ -15,17 +15,8 @@ $ost->addExtraHeader('<meta name="tip-namespace" content="reportes.reportes" />'
 require(STAFFINC_DIR . 'header.inc.php');
 ?>
 <div id="reportes-content">
-<!-- cdn for modernizr, if you haven't included it already -->
-<script src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js" async="async"></script>
-<!-- polyfiller file to detect and load polyfills -->
-<script src="http://cdn.jsdelivr.net/webshim/1.12.4/polyfiller.js"></script>
 
 <script>
-  webshims.setOptions('waitReady', false);
-  webshims.setOptions('forms-ext', {types: 'date'});
-  webshims.polyfill('forms forms-ext');
-
-
 /*
 Function : String Format
 Code : http://jsfiddle.net/joquery/9KYaQ/

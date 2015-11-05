@@ -28,6 +28,10 @@ if (($lang = Internationalization::getCurrentLanguage())
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor.min.js"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-osticket.js"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-fonts.js"></script>
+    <!-- cdn for modernizr, if you haven't included it already -->
+    <script src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js"></script>
+    <!-- polyfiller file to detect and load polyfills -->
+    <script src="http://cdn.jsdelivr.net/webshim/1.12.4/polyfiller.js"></script>
     <script type="text/javascript" src="./js/bootstrap-typeahead.js"></script>
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/thread.css" media="all">
     <link rel="stylesheet" href="./css/scp.css" media="all">
@@ -43,6 +47,12 @@ if (($lang = Internationalization::getCurrentLanguage())
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/loadingbar.css"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css"/>
     <script type="text/javascript" src="./js/jquery.dropdown.js"></script>
+
+    <script>
+    webshims.setOptions('waitReady', false);
+    webshims.setOptions('forms-ext', {types: 'date'});
+    webshims.polyfill('forms forms-ext');
+    </script>
 
     <?php
     if($ost && ($headers=$ost->getExtraHeaders())) {
